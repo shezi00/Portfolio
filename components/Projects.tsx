@@ -85,7 +85,7 @@ export default function Projects() {
             <img src="/plant/plant.jpeg" alt="Project Image 1" />
           </div>
           <div className="gallery__item">
-            <img src="/faq/1.png" alt="Project Image 2" />
+            <img src="/faq/faq.png" alt="Project Image 2" />
           </div>
           {/* Item 3: Centered Focal Image representing The Axora */}
           <div className="gallery__item relative group">
@@ -107,7 +107,7 @@ export default function Projects() {
             <img src="/cv/ai1.png" alt="Project Image 7" />
           </div>
           <div className="gallery__item">
-            <img src="/clinic_imgs/clinic.png" alt="Project Image 8" />
+            <img src="/clinic/clinic.png" alt="Project Image 8" />
           </div>
         </div>
       </div>
