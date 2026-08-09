@@ -36,8 +36,8 @@ const GithubIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
 const CONTACT_ITEMS = [
   {
     title: "Email",
-    value: "chshezi105@gmail.com",
-    href: "mailto:chshezi105@gmail.com",
+    value: "shehzore.dev@gmail.com",
+    href: "mailto:shehzore.dev@gmail.com",
     icon: Mail,
   },
   {

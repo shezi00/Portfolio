@@ -216,10 +216,10 @@ export default function Hero() {
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
                 <a
-                  href="mailto:chshezi105@gmail.com"
+                  href="mailto:shehzore.dev@gmail.com"
                   className="hover:text-white transition-colors"
                 >
-                  chshezi105@gmail.com
+                  shehzore.dev@gmail.com
                 </a>
               </div>
               <div className="flex items-center gap-2">

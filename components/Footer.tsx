@@ -142,7 +142,7 @@ export default function Footer() {
             <div className="space-y-2.5 text-xs font-mono text-neutral-400">
               <div className="flex items-center gap-2.5 hover:text-white transition-colors">
                 <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href="mailto:chshezi105@gmail.com">chshezi105@gmail.com</a>
+                <a href="mailto:shehzore.dev@gmail.com">shehzore.dev@gmail.com</a>
               </div>
               <div className="flex items-center gap-2.5 hover:text-white transition-colors">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
