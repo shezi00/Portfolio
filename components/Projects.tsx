@@ -85,7 +85,7 @@ export default function Projects() {
             <img src="/plant/plant.jpeg" alt="Project Image 1" />
           </div>
           <div className="gallery__item">
-            <img src="/faq/faq.png" alt="Project Image 2" />
+            <img src="/faq/faq.PNG" alt="Project Image 2" />
           </div>
           {/* Item 3: Centered Focal Image representing The Axora */}
           <div className="gallery__item relative group">
@@ -98,16 +98,16 @@ export default function Projects() {
             <img src="/DineX/dinex.png" alt="Project Image 4" />
           </div>
           <div className="gallery__item">
-            <img src="/Dental/dental.png" alt="Project Image 5" />
+            <img src="/Dental/dental.PNG" alt="Project Image 5" />
           </div>
           <div className="gallery__item">
-            <img src="/deepfake/deepfake.png" alt="Project Image 6" />
+            <img src="/deepfake/deepfake.PNG" alt="Project Image 6" />
           </div>
           <div className="gallery__item">
-            <img src="/cv/ai1.png" alt="Project Image 7" />
+            <img src="/cv/ai1.PNG" alt="Project Image 7" />
           </div>
           <div className="gallery__item">
-            <img src="/clinic/clinic.png" alt="Project Image 8" />
+            <img src="/clinic/clinic.PNG" alt="Project Image 8" />
           </div>
         </div>
       </div>
