@@ -85,29 +85,29 @@ export default function Projects() {
             <img src="/plant/plant.jpeg" alt="Project Image 1" />
           </div>
           <div className="gallery__item">
-            <img src="/faq/1.PNG" alt="Project Image 2" />
+            <img src="/faq/1.png" alt="Project Image 2" />
           </div>
           {/* Item 3: Centered Focal Image representing The Axora */}
           <div className="gallery__item relative group">
-            <img src="/axora/axora.PNG" alt="The Axora AI Platform" />
+            <img src="/axora/axora.png" alt="The Axora AI Platform" />
             <div className="absolute inset-0 bg-emerald-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
               
             </div>
           </div>
           <div className="gallery__item">
-            <img src="/DineX/dinex.PNG" alt="Project Image 4" />
+            <img src="/DineX/dinex.png" alt="Project Image 4" />
           </div>
           <div className="gallery__item">
-            <img src="/Dental/dental.PNG" alt="Project Image 5" />
+            <img src="/Dental/dental.png" alt="Project Image 5" />
           </div>
           <div className="gallery__item">
-            <img src="/deepfake/deepfake.PNG" alt="Project Image 6" />
+            <img src="/deepfake/deepfake.png" alt="Project Image 6" />
           </div>
           <div className="gallery__item">
-            <img src="/cv/ai1.PNG" alt="Project Image 7" />
+            <img src="/cv/ai1.png" alt="Project Image 7" />
           </div>
           <div className="gallery__item">
-            <img src="/clinic_imgs/clinic.PNG" alt="Project Image 8" />
+            <img src="/clinic_imgs/clinic.png" alt="Project Image 8" />
           </div>
         </div>
       </div>
