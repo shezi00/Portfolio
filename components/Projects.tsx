@@ -98,7 +98,7 @@ export default function Projects() {
             <img src="/DineX/dinex.png" alt="Project Image 4" />
           </div>
           <div className="gallery__item">
-            <img src="/Dental/dental.PNG" alt="Project Image 5" />
+            <img src="/Dental/dental.png" alt="Project Image 5" />
           </div>
           <div className="gallery__item">
             <img src="/deepfake/deepfake.PNG" alt="Project Image 6" />
