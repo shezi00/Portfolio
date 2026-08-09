@@ -74,7 +74,7 @@ export default function Projects() {
           </span>
         </h2>
         <p className="text-neutral-400 text-xs md:text-sm font-light">
-          Scroll down 
+          Scroll down to experience the bento gallery zoom animation into our flagship platform.
         </p>
       </div>
 
