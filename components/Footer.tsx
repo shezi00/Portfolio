@@ -33,19 +33,19 @@ export default function Footer() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. Ambient pulsing glow effect
+      // Ambient pulsing glow effect matching hero/contact sections
       if (glowRef.current) {
         gsap.to(glowRef.current, {
           scale: 1.3,
-          opacity: 0.25,
-          duration: 3,
+          opacity: 0.35,
+          duration: 3.5,
           repeat: -1,
           yoyo: true,
           ease: "sine.easeInOut",
         });
       }
 
-      // 2. Entrance animation for upper section columns
+      // Entrance animation for upper section columns
       gsap.fromTo(
         ".footer-col",
         { y: 35, opacity: 0 },
@@ -62,7 +62,7 @@ export default function Footer() {
         }
       );
 
-      // 3. Bottom copyright bar entrance
+      // Bottom copyright bar entrance
       gsap.fromTo(
         ".footer-bottom",
         { y: 20, opacity: 0 },
@@ -83,6 +83,18 @@ export default function Footer() {
     return () => ctx.revert();
   }, []);
 
+  // Smooth scroll function identical to Navbar implementation
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -90,42 +102,46 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="w-full bg-neutral-950 text-white rounded-t-3xl border-t border-white/10 relative overflow-hidden mt-12"
+      className="w-full bg-[#FAFAF8] text-neutral-900 rounded-2xl border border-black/5 relative overflow-hidden my-4"
     >
-      {/* Background Glow Effect */}
+      {/* Background Violet Glow Effect */}
       <div
         ref={glowRef}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-24 bg-emerald-500/10 blur-3xl pointer-events-none rounded-full"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[28rem] h-28 bg-violet-300/30 blur-[100px] pointer-events-none rounded-full"
       />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-16 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start pb-12 border-b border-neutral-800/80">
+      <div className="max-w-7xl mx-auto px-6 md:px-16 py-12 md:py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start pb-12 border-b border-black/10">
           
           {/* Brand Identity */}
           <div className="footer-col md:col-span-5 space-y-4">
-            <a href="#home" className="inline-flex items-center gap-2 group">
-              <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Muhammad Shehzore
+            <a 
+              href="#home" 
+              onClick={(e) => scrollToSection(e, "#home")} 
+              className="inline-flex items-center gap-2 group"
+            >
+              <span className="text-2xl font-black uppercase tracking-tight text-neutral-900">
+                Muhammad <span className="text-violet-600">Shehzore</span>
               </span>
-              <Sparkles className="w-4 h-4 text-emerald-400 opacity-80 group-hover:rotate-12 transition-transform" />
+             
             </a>
-            <p className="text-neutral-400 text-sm leading-relaxed max-w-sm font-light">
-              Crafting modern web architectures, intelligent AI integrations, 
-              and seamless digital experiences.
+            <p className="text-neutral-600 text-sm leading-relaxed max-w-sm font-light">
+              Building modern websites, smart AI solutions, and seamless digital experiences.
             </p>
           </div>
 
           {/* Navigation Links */}
           <div className="footer-col md:col-span-3 space-y-3">
-            <h4 className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
+            <h4 className="text-xs font-mono text-violet-600 uppercase tracking-wider font-semibold">
               Navigation
             </h4>
-            <ul className="space-y-2 text-sm text-neutral-300">
+            <ul className="space-y-2 text-sm text-neutral-700">
               {NAV_LINKS.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="hover:text-emerald-400 transition-colors inline-block"
+                    onClick={(e) => scrollToSection(e, link.href)}
+                    className="hover:text-violet-600 transition-colors inline-block font-medium cursor-pointer"
                   >
                     {link.name}
                   </a>
@@ -136,20 +152,20 @@ export default function Footer() {
 
           {/* Direct Contact Info */}
           <div className="footer-col md:col-span-4 space-y-3">
-            <h4 className="text-xs font-mono text-emerald-400 uppercase tracking-wider">
+            <h4 className="text-xs font-mono text-violet-600 uppercase tracking-wider font-semibold">
               Contact Direct
             </h4>
-            <div className="space-y-2.5 text-xs font-mono text-neutral-400">
-              <div className="flex items-center gap-2.5 hover:text-white transition-colors">
-                <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="space-y-2.5 text-xs font-mono text-neutral-600">
+              <div className="flex items-center gap-2.5 hover:text-neutral-900 transition-colors">
+                <Mail className="w-4 h-4 text-violet-600 shrink-0" />
                 <a href="mailto:shehzore.dev@gmail.com">shehzore.dev@gmail.com</a>
               </div>
-              <div className="flex items-center gap-2.5 hover:text-white transition-colors">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2.5 hover:text-neutral-900 transition-colors">
+                <Phone className="w-4 h-4 text-violet-600 shrink-0" />
                 <a href="tel:+923315378084">+92 331 5378084</a>
               </div>
               <div className="flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
+                <MapPin className="w-4 h-4 text-violet-600 shrink-0" />
                 <span>Islamabad, Pakistan</span>
               </div>
             </div>
@@ -167,7 +183,7 @@ export default function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn"
-              className="p-2 rounded-full border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-emerald-400 hover:border-neutral-700 transition-colors"
+              className="p-2 rounded-full border border-black/10 bg-white text-neutral-700 hover:text-violet-600 hover:border-violet-400/50 hover:bg-violet-50 transition-colors shadow-sm"
             >
               <LinkedinIcon className="w-4 h-4" />
             </a>
@@ -176,7 +192,7 @@ export default function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub"
-              className="p-2 rounded-full border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-emerald-400 hover:border-neutral-700 transition-colors"
+              className="p-2 rounded-full border border-black/10 bg-white text-neutral-700 hover:text-violet-600 hover:border-violet-400/50 hover:bg-violet-50 transition-colors shadow-sm"
             >
               <GithubIcon className="w-4 h-4" />
             </a>
@@ -185,7 +201,7 @@ export default function Footer() {
             <button
               onClick={scrollToTop}
               aria-label="Scroll to top"
-              className="ml-2 p-2.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition-all hover:-translate-y-0.5"
+              className="ml-2 p-2.5 rounded-full bg-violet-600/10 border border-violet-500/20 text-violet-600 hover:bg-violet-600 hover:text-white transition-all hover:-translate-y-0.5"
             >
               <ArrowUp className="w-4 h-4" />
             </button>

@@ -2,14 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import {
-  MapPin,
-  Mail,
-  Phone,
-  ArrowUpRight,
-  Download,
-} from "lucide-react";
-import gsap from "gsap";
+import { MapPin, Mail, Phone, ArrowUpRight, Download } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+import { useParticleCanvas } from "@/app/hooks/useParticleCanvas";
 
 // Static array defined outside the component
 const ROLES = [
@@ -31,115 +26,113 @@ const GithubIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+/* -------------------------------------------------------------------------- */
+/*  Animation variants — each group enters from a different direction         */
+/* -------------------------------------------------------------------------- */
+
+// Top bar: drops down from above
+const fromTop: Variants = {
+  hidden: { opacity: 0, y: -30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const topBarContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+  },
+};
+
+// Resume button: slides in from the right
+const fromRight: Variants = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: "easeOut", delay: 0.2 },
+  },
+};
+
+// "Muhammad" outline text: slides in from the left
+const nameFromLeft: Variants = {
+  hidden: { opacity: 0, x: -60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+// "Shehzore" fill text: slides in from the right
+const nameFromRight: Variants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+// Photo: rises up from below with a scale-in
+const photoFromBottom: Variants = {
+  hidden: { opacity: 0, y: 80, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+// Role/blurb/CTA block: slides in from the left
+const contentContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.6 },
+  },
+};
+
+const contentItem: Variants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+// Social pills: slides in from the right
+const socialContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.7 },
+  },
+};
+
+const socialItem: Variants = {
+  hidden: { opacity: 0, x: 30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const MotionA = motion.a;
+
 export default function Hero() {
   const [typedRole, setTypedRole] = useState("");
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // GSAP Button Hover Handlers
-  const handleButtonMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const btn = e.currentTarget;
-    const icon = btn.querySelector("svg");
-
-    gsap.to(btn, {
-      scale: 1.05,
-      duration: 0.3,
-      ease: "power2.out",
-      boxShadow: "0px 10px 25px -5px rgba(16, 185, 129, 0.25)",
-    });
-
-    if (icon) {
-      gsap.to(icon, {
-        x: 3,
-        y: -3,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    }
-  };
-
-  const handleButtonMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const btn = e.currentTarget;
-    const icon = btn.querySelector("svg");
-
-    gsap.to(btn, {
-      scale: 1,
-      duration: 0.3,
-      ease: "power2.out",
-      boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
-    });
-
-    if (icon) {
-      gsap.to(icon, {
-        x: 0,
-        y: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    }
-  };
-
-  const handleSocialMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    gsap.to(e.currentTarget, {
-      scale: 1.15,
-      borderColor: "rgba(16, 185, 129, 0.5)",
-      backgroundColor: "rgba(16, 185, 129, 0.1)",
-      duration: 0.3,
-      ease: "back.out(1.7)",
-    });
-  };
-
-  const handleSocialMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    gsap.to(e.currentTarget, {
-      scale: 1,
-      borderColor: "rgba(38, 38, 38, 1)",
-      backgroundColor: "rgba(23, 23, 23, 1)",
-      duration: 0.3,
-      ease: "power2.out",
-    });
-  };
-
-  // GSAP Entrance Animations
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Background typography fade in
-      gsap.fromTo(
-        ".hero-bg-text",
-        { opacity: 0, scale: 0.95 },
-        { opacity: 0.05, scale: 1, duration: 1.2, ease: "power2.out" }
-      );
-
-      // 2. Main content staggered entrance
-      gsap.fromTo(
-        ".hero-animate",
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: "power3.out",
-        }
-      );
-
-      // 3. Profile card entrance
-      gsap.fromTo(
-        ".hero-card",
-        { x: 40, opacity: 0, scale: 0.95 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          delay: 0.2,
-          ease: "power3.out",
-        }
-      );
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
+  // Neural Network Background Particle Canvas
+  useParticleCanvas(canvasRef);
 
   // Self-contained typewriter effect
   useEffect(() => {
@@ -168,158 +161,251 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="home"
-      className="portfolio-section section min-h-[calc(100vh-64px)] w-full relative flex items-center justify-center overflow-hidden bg-neutral-950 rounded-2xl border border-white/5"
+      className="portfolio-section section min-h-[calc(100vh-64px)] w-full relative flex flex-col overflow-hidden bg-[#FAFAF8] rounded-2xl border border-black/5"
     >
-      {/* Background Decorative Typography */}
-      <div className="hero-bg-text absolute inset-0 select-none overflow-hidden opacity-5 pointer-events-none flex flex-col justify-between p-8 font-mono text-[10vw] leading-none text-right font-black uppercase tracking-tighter">
-        <div>Generative AI</div>
-        <div>Full-Stack</div>
-        <div>Architecture</div>
-      </div>
+      {/* Particle Canvas Background */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 z-0 pointer-events-none w-full h-full"
+      />
 
-      <div className="section-content w-full h-full flex items-center justify-center px-6 md:px-16 py-12 z-10">
-        <div className="section-inner max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Left Text Column */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="space-y-2">
-              <p className="hero-animate text-xl md:text-2xl text-neutral-400 font-light">
-                Hi, I'm
-              </p>
+      {/* Soft ambient accent */}
+      <div className="absolute top-0 right-0 w-[32rem] h-[32rem] rounded-full bg-violet-300/20 blur-[130px] pointer-events-none z-0" />
 
-              <h1 className="hero-animate text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight pb-2">
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-500 bg-clip-text text-transparent">
-                  Muhammad Shehzore
-                </span>
-              </h1>
+      {/* Top bar: availability + nav-style contact pills — drops in from the top */}
+      <motion.div
+        className="relative z-20 flex flex-wrap items-center justify-between gap-4 px-6 md:px-12 pt-8"
+        initial="hidden"
+        animate="visible"
+        variants={topBarContainer}
+      >
+        <motion.div
+          className="hidden md:flex items-center gap-2 text-xs font-mono text-neutral-500"
+          variants={topBarContainer}
+        >
+          <motion.span
+            variants={fromTop}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 bg-white"
+          >
+            <MapPin className="w-3.5 h-3.5 text-violet-500" />
+            Islamabad, Pakistan
+          </motion.span>
+          <MotionA
+            variants={fromTop}
+            href="mailto:shehzore.dev@gmail.com"
+            whileHover={{
+              scale: 1.06,
+              borderColor: "rgba(124, 58, 237, 0.4)",
+              backgroundColor: "rgba(124, 58, 237, 0.06)",
+            }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 bg-white"
+          >
+            <Mail className="w-3.5 h-3.5 text-violet-500" />
+            shehzore.dev@gmail.com
+          </MotionA>
+          <MotionA
+            variants={fromTop}
+            href="tel:+923315378084"
+            whileHover={{
+              scale: 1.06,
+              borderColor: "rgba(124, 58, 237, 0.4)",
+              backgroundColor: "rgba(124, 58, 237, 0.06)",
+            }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 bg-white"
+          >
+            <Phone className="w-3.5 h-3.5 text-violet-500" />
+            +92 331 5378084
+          </MotionA>
+        </motion.div>
 
-              <div className="hero-animate h-10 flex items-center">
-                <span className="text-xl sm:text-2xl font-mono text-emerald-400 font-medium">
-                  {typedRole}
-                </span>
-                <span className="w-0.5 h-6 bg-emerald-400 ml-1 animate-pulse" />
-              </div>
-            </div>
+        <MotionA
+          variants={fromRight}
+          href="/M.Shehzore.pdf"
+          download="Muhammad.Shehzore.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{
+            scale: 1.04,
+            boxShadow: "0px 10px 28px -8px rgba(124, 58, 237, 0.35)",
+          }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-neutral-900 text-white font-semibold text-xs md:text-sm cursor-pointer"
+        >
+          Resume <Download className="w-3.5 h-3.5" />
+        </MotionA>
+      </motion.div>
 
-            <p className="hero-animate text-neutral-300 text-base md:text-lg leading-relaxed font-light max-w-xl">
-              Helping Brands grow their Business through modern web
-              architectures, intelligent AI solutions, and slick interactive
-              user interfaces.
-            </p>
+      {/* Center stage: name, photo, and side content all in one relative block */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-6 pb-10">
+        <h1 className="relative select-none text-center leading-[0.88] font-black uppercase tracking-tighter text-[13vw] sm:text-[10vw] lg:text-[7.5vw]">
+          <motion.span
+            initial="hidden"
+            animate="visible"
+            variants={nameFromLeft}
+            className="relative z-10 block text-transparent"
+            style={{ WebkitTextStroke: "1.5px #171717" }}
+          >
+            Muhammad
+          </motion.span>
 
-            {/* Quick Details Bar */}
-            <div className="hero-animate flex flex-wrap items-center gap-y-2 gap-x-6 text-xs md:text-sm font-mono text-neutral-400 pt-1 pb-2 border-y border-neutral-800/80">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Islamabad, Pakistan</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a
-                  href="mailto:shehzore.dev@gmail.com"
-                  className="hover:text-white transition-colors"
-                >
-                  shehzore.dev@gmail.com
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a
-                  href="tel:+923315378084"
-                  className="hover:text-white transition-colors"
-                >
-                  +92 3315378084
-                </a>
-              </div>
-            </div>
+          {/* Hand-drawn accent underline — draws in after the name arrives */}
+          <svg
+            viewBox="0 0 400 30"
+            preserveAspectRatio="none"
+            className="absolute left-1/2 -translate-x-1/2 w-[38%] h-[3vw] max-h-8 -bottom-[3%] z-0 pointer-events-none"
+          >
+            <motion.path
+              d="M6 20 C 80 6, 160 4, 240 10 S 360 22, 394 12"
+              fill="none"
+              stroke="#8b5cf6"
+              strokeWidth="5"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 0.9, delay: 0.6, ease: "easeInOut" }}
+            />
+          </svg>
 
-            {/* Action Buttons */}
-            <div className="hero-animate flex flex-wrap items-center gap-4 pt-2">
-              <a
-                href="#projects"
-                onMouseEnter={handleButtonMouseEnter}
-                onMouseLeave={handleButtonMouseLeave}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-semibold text-sm cursor-pointer transition-colors"
-              >
-                View Projects <ArrowUpRight className="w-4 h-4" />
-              </a>
+          <motion.span
+            initial="hidden"
+            animate="visible"
+            variants={nameFromRight}
+            className="relative z-10 block text-neutral-900"
+          >
+            Shehzore
+          </motion.span>
+        </h1>
 
-             <a
-  href="/M.Shehzore.pdf"
-  download="Muhammad.Shehzore.pdf"
-  target="_blank"
-  rel="noopener noreferrer"
-  onMouseEnter={handleButtonMouseEnter}
-  onMouseLeave={handleButtonMouseLeave}
-  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-700 bg-neutral-900/80 text-neutral-200 font-semibold text-sm cursor-pointer transition-colors"
->
-  Download Resume <Download className="w-4 h-4" />
-</a>
-
-              <div className="flex items-center gap-3 ml-2">
-                <a
-                  href="https://www.linkedin.com/in/muhammad-shehzore-620a44268/"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="LinkedIn Profile"
-                  onMouseEnter={handleSocialMouseEnter}
-                  onMouseLeave={handleSocialMouseLeave}
-                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900 text-neutral-300 transition-colors"
-                >
-                  <LinkedinIcon className="w-4 h-4" />
-                </a>
-
-                <a
-                  href="https://github.com/shezi00"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="GitHub Profile"
-                  onMouseEnter={handleSocialMouseEnter}
-                  onMouseLeave={handleSocialMouseLeave}
-                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900 text-neutral-300 transition-colors"
-                >
-                  <GithubIcon className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
+        {/* Photo overlapping the name, centered — rises up from below */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={photoFromBottom}
+          className="relative z-20 -mt-[26vw] sm:-mt-[19vw] lg:-mt-[13vw] w-[100vw] sm:w-[66vw] lg:w-[42vw] max-w-[680px] aspect-[3/4]"
+        >
+          <div className="absolute -inset-8 rounded-full bg-violet-400/25 blur-[70px] pointer-events-none" />
+          <div
+            className="relative w-full h-full"
+            style={{
+              maskImage:
+                "radial-gradient(ellipse 72% 82% at 50% 32%, black 55%, rgba(0,0,0,0.65) 74%, transparent 100%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 72% 82% at 50% 32%, black 55%, rgba(0,0,0,0.65) 74%, transparent 100%)",
+            }}
+          >
+            <Image
+              src="/mebg.png"
+              alt="Muhammad Shehzore"
+              fill
+              priority
+              sizes="(max-width: 1024px) 60vw, 320px"
+              className="object-contain object-bottom"
+            />
           </div>
+        </motion.div>
 
-          {/* Right Profile Card */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="hero-card relative w-full max-w-sm aspect-[3/4] rounded-3xl overflow-hidden border border-neutral-800 bg-neutral-900/60 backdrop-blur-sm group p-2 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 via-transparent to-cyan-500/20 opacity-50 group-hover:opacity-80 transition-opacity z-10 pointer-events-none" />
+        {/* Role, blurb, CTAs — slides in from the left, staggered */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={contentContainer}
+          className="relative z-20 mt-8 lg:mt-0 lg:absolute lg:left-4 xl:left-10 lg:top-[62%] lg:-translate-y-1/2 w-full max-w-md lg:max-w-xs text-center lg:text-left space-y-4"
+        >
+          <motion.div
+            variants={contentItem}
+            className="h-8 flex items-center justify-center lg:justify-start"
+          >
+            <span className="text-lg md:text-xl font-mono text-violet-600 font-semibold">
+              {typedRole}
+            </span>
+            <span className="w-0.5 h-5 bg-violet-500 ml-1 animate-pulse" />
+          </motion.div>
 
-              <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                <Image
-                  src="/me1.jpeg"
-                  alt="Muhammad Shehzore"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 380px"
-                  className="object-contain object-bottom filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
-                />
-              </div>
+          <motion.p
+            variants={contentItem}
+            className="text-neutral-600 text-sm md:text-base leading-relaxed font-light"
+          >
+            Helping brands grow their business through{" "}
+            <span className="text-violet-600 font-medium">
+              modern web architectures
+            </span>
+            , intelligent AI solutions, and{" "}
+            <span className="text-violet-600 font-medium">
+              slick interactive interfaces.
+            </span>
+          </motion.p>
 
-              <div className="absolute bottom-4 left-4 right-4 z-20 p-3 rounded-xl bg-neutral-950/85 border border-neutral-800/80 backdrop-blur-md">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400">
-                      Status
-                    </p>
-                    <p className="text-xs font-medium text-emerald-400 flex items-center gap-1.5 mt-0.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                      Open for projects
-                    </p>
-                  </div>
-                  <span className="text-xs font-mono text-neutral-500">
-                    2026
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <motion.div
+            variants={contentItem}
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-1"
+          >
+            <MotionA
+              href="#projects"
+              whileHover={{
+                scale: 1.04,
+                boxShadow: "0px 10px 28px -8px rgba(124, 58, 237, 0.35)",
+              }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white font-semibold text-sm cursor-pointer"
+            >
+              View Projects <ArrowUpRight className="w-4 h-4" />
+            </MotionA>
+            <MotionA
+              href="#contact"
+              whileHover={{
+                scale: 1.04,
+                boxShadow: "0px 10px 28px -8px rgba(124, 58, 237, 0.35)",
+              }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-black/15 bg-white text-neutral-800 font-semibold text-sm cursor-pointer"
+            >
+              Let&apos;s collaborate <ArrowUpRight className="w-4 h-4" />
+            </MotionA>
+          </motion.div>
+        </motion.div>
 
-        </div>
+        {/* Social pills — slides in from the right, staggered */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={socialContainer}
+          className="relative z-20 mt-6 lg:mt-0 lg:absolute lg:right-4 xl:right-10 lg:top-[62%] lg:-translate-y-1/2 flex flex-row lg:flex-col gap-3"
+        >
+          <MotionA
+            variants={socialItem}
+            href="https://www.linkedin.com/in/muhammad-shehzore-620a44268/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="LinkedIn Profile"
+            whileHover={{
+              scale: 1.06,
+              borderColor: "rgba(124, 58, 237, 0.4)",
+              backgroundColor: "rgba(124, 58, 237, 0.06)",
+            }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 bg-white text-neutral-700 text-sm font-medium"
+          >
+            <LinkedinIcon className="w-4 h-4" /> LinkedIn
+          </MotionA>
+          <MotionA
+            variants={socialItem}
+            href="https://github.com/shezi00"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub Profile"
+            whileHover={{
+              scale: 1.06,
+              borderColor: "rgba(124, 58, 237, 0.4)",
+              backgroundColor: "rgba(124, 58, 237, 0.06)",
+            }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 bg-white text-neutral-700 text-sm font-medium"
+          >
+            <GithubIcon className="w-4 h-4" /> GitHub
+          </MotionA>
+        </motion.div>
       </div>
     </section>
   );

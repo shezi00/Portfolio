@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #FAFAF8;
   --foreground: #171717;
 }
 
@@ -14,13 +14,26 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #FAFAF8;
+    --foreground: #171717;
   }
 }
 
+/* 
+  Use 'overflow-x: clip' on html & body instead of 'overflow-x: hidden'. 
+  'clip' prevents horizontal overflow without breaking JS scroll triggers (Framer Motion / GSAP).
+*/
+html,
 body {
-  background: var(--background);
+  background-color: #FAFAF8 !important;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
+.portfolio-section {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }

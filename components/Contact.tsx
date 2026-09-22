@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useParticleCanvas } from "@/app/hooks/useParticleCanvas";
 
-// Custom SVG components for brand icons not present in Lucide
+// Custom SVG component for LinkedIn
 const LinkedinIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   <svg
     className={className}
@@ -15,21 +16,6 @@ const LinkedinIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
     aria-hidden="true"
   >
     <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-  </svg>
-);
-
-const GithubIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
-  <svg
-    className={className}
-    fill="currentColor"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-    />
   </svg>
 );
 
@@ -42,51 +28,43 @@ const CONTACT_ITEMS = [
   },
   {
     title: "Phone",
-    value: "+92 3315378084",
+    value: "+92 331 5378084",
     href: "tel:+923315378084",
     icon: Phone,
   },
   {
     title: "LinkedIn",
-    value: "https://www.linkedin.com/in/muhammad-shehzore-620a44268/",
-    href: "https://linkedin.com",
+    value: "linkedin.com/in/muhammad-shehzore",
+    href: "https://www.linkedin.com/in/muhammad-shehzore-620a44268/",
     icon: LinkedinIcon,
-  },
-  {
-    title: "GitHub",
-    value: "https://github.com/shezi00",
-    href: "https://github.com",
-    icon: GithubIcon,
-  },
-  {
-    title: "Location",
-    value: "Islamabad,Pakistan",
-    href: "#",
-    icon: MapPin,
   },
 ];
 
 export default function Contact() {
   const containerRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Neural Network Background Particle Canvas
+  useParticleCanvas(canvasRef);
 
   useGSAP(
     () => {
       gsap.registerPlugin(ScrollTrigger);
 
-      // 1. Ambient pulsing glow behind the section
+      // Ambient pulsing glow matching the hero accent
       if (glowRef.current) {
         gsap.to(glowRef.current, {
-          scale: 1.25,
-          opacity: 0.18,
-          duration: 3.5,
+          scale: 1.2,
+          opacity: 0.35,
+          duration: 4,
           repeat: -1,
           yoyo: true,
           ease: "sine.easeInOut",
         });
       }
 
-      // 2. Entrance animation for header text
+      // Header entrance animation
       gsap.fromTo(
         ".contact-header",
         { y: 30, opacity: 0 },
@@ -102,10 +80,10 @@ export default function Contact() {
         }
       );
 
-      // 3. Staggered entrance animation for contact cards
+      // Staggered cards entrance
       gsap.fromTo(
         ".contact-card",
-        { y: 40, opacity: 0, scale: 0.95 },
+        { y: 40, opacity: 0, scale: 0.94 },
         {
           y: 0,
           opacity: 1,
@@ -123,36 +101,73 @@ export default function Contact() {
     { scope: containerRef }
   );
 
+  // Dynamic 3D Tilt handlers
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+
+    gsap.to(card, {
+      rotateX: rotateX,
+      rotateY: rotateY,
+      boxShadow: "0px 20px 40px -15px rgba(124, 58, 237, 0.18)",
+      borderColor: "rgba(139, 92, 246, 0.4)",
+      duration: 0.25,
+      ease: "power2.out",
+      transformPerspective: 1000,
+    });
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    gsap.to(e.currentTarget, {
+      rotateX: 0,
+      rotateY: 0,
+      boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
+      borderColor: "rgba(0,0,0,0.08)",
+      duration: 0.5,
+      ease: "power2.out",
+    });
+  };
+
   return (
     <section
       ref={containerRef}
       id="contact"
-      className="portfolio-section section min-h-[calc(100vh-64px)] w-full flex items-center justify-center bg-neutral-950 text-white rounded-2xl border border-white/5 my-4 relative overflow-hidden"
+      className="portfolio-section section min-h-[calc(100vh-64px)] w-full relative flex items-center justify-center overflow-hidden bg-[#FAFAF8] rounded-2xl border border-black/5 mt-0 mb-4"
     >
-      {/* Animated Background Glow */}
-      <div
-        ref={glowRef}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/10 blur-[140px] pointer-events-none rounded-full"
+      {/* Particle Canvas Background */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 z-0 pointer-events-none w-full h-full"
       />
 
-      <div className="section-content w-full h-full flex justify-center px-6 md:px-12 py-16 z-10">
-        <div className="section-inner max-w-6xl w-full flex flex-col items-center justify-center space-y-12 text-center">
-          
+      {/* Soft Ambient Accent Glow */}
+      <div
+        ref={glowRef}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34rem] h-[34rem] rounded-full bg-violet-300/25 blur-[120px] pointer-events-none z-0"
+      />
+
+      <div className="section-content relative z-10 w-full h-full flex justify-center px-6 md:px-12 py-16">
+        <div className="section-inner max-w-5xl w-full flex flex-col items-center justify-center space-y-12 text-center">
           {/* Header */}
           <div className="contact-header space-y-3">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
-              Let's{" "}
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Connect
-              </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-neutral-900">
+              Let's <span className="text-violet-600">Connect</span>
             </h2>
-            <p className="text-neutral-400 text-sm md:text-base font-light">
-              Ready to collaborate on your next project?
+            <p className="text-neutral-600 text-sm md:text-base font-light max-w-md mx-auto">
+              Ready to collaborate on your next project? Feel free to reach out.
             </p>
           </div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 w-full">
+          {/* 3D Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl [perspective:1000px]">
             {CONTACT_ITEMS.map((item) => {
               const Icon = item.icon;
               return (
@@ -161,19 +176,23 @@ export default function Contact() {
                   href={item.href}
                   target={item.href.startsWith("http") ? "_blank" : "_self"}
                   rel="noreferrer"
-                  className="contact-card group relative p-8 rounded-3xl bg-neutral-900/60 border border-neutral-800 backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-4 hover:border-emerald-500/40 hover:bg-neutral-900/90 transition-all duration-300 hover:-translate-y-1 shadow-lg overflow-hidden cursor-pointer"
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  className="contact-card group relative p-8 rounded-3xl bg-white border border-black/8 shadow-sm flex flex-col items-center justify-center text-center space-y-5 cursor-pointer [transform-style:preserve-3d] transition-colors duration-300"
                 >
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[1px] shadow-lg shadow-emerald-500/10 group-hover:scale-110 transition-transform duration-300">
-                    <div className="w-full h-full rounded-full bg-neutral-950 flex items-center justify-center text-emerald-400">
-                      {Icon && <Icon className="w-5 h-5" />}
-                    </div>
+                  {/* Floating 3D Icon Badge */}
+                  <div className="w-16 h-16 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300 [transform:translateZ(30px)]">
+                    {Icon && (
+                      <Icon className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
+                    )}
                   </div>
 
-                  <div className="space-y-1.5 w-full">
-                    <h3 className="text-lg font-bold text-white tracking-wide">
+                  {/* Floating 3D Text */}
+                  <div className="space-y-1.5 w-full [transform:translateZ(20px)]">
+                    <h3 className="text-xl font-bold text-neutral-900 tracking-wide">
                       {item.title}
                     </h3>
-                    <p className="text-[11px] text-neutral-400 font-mono tracking-tight group-hover:text-neutral-300 transition-colors truncate px-1">
+                    <p className="text-xs text-neutral-500 font-mono tracking-tight group-hover:text-violet-600 transition-colors truncate px-2">
                       {item.value}
                     </p>
                   </div>
@@ -181,7 +200,6 @@ export default function Contact() {
               );
             })}
           </div>
-
         </div>
       </div>
     </section>
