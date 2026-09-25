@@ -30,6 +30,29 @@ function cn(...classes: (string | boolean | undefined)[]) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Directional animation helpers                                             */
+/* -------------------------------------------------------------------------- */
+
+type Direction = "left" | "right" | "top" | "bottom";
+
+const OFFSETS: Record<Direction, { x: number; y: number }> = {
+  left: { x: -90, y: 0 },
+  right: { x: 90, y: 0 },
+  top: { x: 0, y: -70 },
+  bottom: { x: 0, y: 70 },
+};
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const VIEWPORT = { once: false, amount: 0.2 };
+
+const slide = (from: Direction, delay = 0, duration = 0.8) => ({
+  initial: { opacity: 0, ...OFFSETS[from] },
+  whileInView: { opacity: 1, x: 0, y: 0 },
+  viewport: VIEWPORT,
+  transition: { duration, delay, ease: EASE },
+});
+
+/* -------------------------------------------------------------------------- */
 /*  Content                                                                   */
 /* -------------------------------------------------------------------------- */
 
@@ -95,7 +118,6 @@ interface FeatureStepsProps {
   direction: number;
   onSelect: (index: number) => void;
   className?: string;
-  title?: string;
   imageHeight?: string;
 }
 
@@ -105,7 +127,6 @@ function FeatureSteps({
   direction,
   onSelect,
   className,
-  title = "Why Work With Me",
   imageHeight = "h-[260px] sm:h-[380px] md:h-[500px]",
 }: FeatureStepsProps) {
   const active = features[activeIndex];
@@ -134,11 +155,24 @@ function FeatureSteps({
   return (
     <div className={cn("p-4 md:p-8", className)}>
       <div className="max-w-7xl mx-auto w-full">
-        {title && (
-          <h2 className="why-title text-3xl md:text-4xl lg:text-5xl font-black mb-6 md:mb-10 text-center uppercase tracking-tight text-neutral-900">
-            {title}
+        {/* Section Heading with "Why Work" and "With Me" */}
+        <div className="flex flex-col items-center text-center mb-8 md:mb-12">
+          <h2 className="why-title leading-[0.95] font-black uppercase tracking-tighter text-5xl sm:text-6xl lg:text-7xl">
+            <motion.span
+              className="inline-block text-transparent"
+              style={{ WebkitTextStroke: "1.5px #171717" }}
+              {...slide("left", 0.15, 0.9)}
+            >
+              Why Work
+            </motion.span>{" "}
+            <motion.span
+              className="inline-block text-[#8023FE]"
+              {...slide("right", 0.15, 0.9)}
+            >
+              With Me
+            </motion.span>
           </h2>
-        )}
+        </div>
 
         <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10 items-center">
           {/* Step list */}
@@ -509,12 +543,7 @@ export default function WhyChooseMe() {
 
       <div className="section-content relative z-10 w-full max-w-6xl">
         {/* Header badge */}
-        <div className="why-choose-header flex flex-col items-center text-center space-y-3 mb-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/10 bg-white text-xs font-mono font-medium text-violet-600 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-violet-600" />
-            Value Proposition
-          </div>
-        </div>
+       
 
         {/* Feature steps */}
         <FeatureSteps
@@ -522,7 +551,6 @@ export default function WhyChooseMe() {
           activeIndex={index}
           direction={dir}
           onSelect={goToStep}
-          title="Why Work With Me"
         />
       </div>
     </section>

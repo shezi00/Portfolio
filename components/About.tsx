@@ -15,6 +15,7 @@ import {
   Award,
   Calendar,
   TrendingUp,
+  Sparkles,
 } from "lucide-react";
 import {
   motion,
@@ -43,8 +44,9 @@ const OFFSETS: Record<Direction, { x: number; y: number }> = {
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Set `once: false` to replay every animation each time you scroll back
-const VIEWPORT = { once: true, amount: 0.2 };
+// once: false → replays every time the element re-enters the viewport,
+// no refresh needed
+const VIEWPORT = { once: false, amount: 0.2 };
 
 const slide = (from: Direction, delay = 0, duration = 0.8) => ({
   initial: { opacity: 0, ...OFFSETS[from] },
@@ -125,14 +127,13 @@ type Stat = {
   icon: React.ReactNode;
   value: number;
   label: string;
-  suffix: string;
   from: Direction;
 };
 
 const STATS: Stat[] = [
-  { icon: <Award className="w-6 h-6" />, value: 10, label: "Projects built", suffix: "+", from: "left" },
-  { icon: <Calendar className="w-6 h-6" />, value: 3, label: "Years coding", suffix: "+", from: "bottom" },
-  { icon: <TrendingUp className="w-6 h-6" />, value: 30, label: "Technologies used", suffix: "+", from: "right" },
+  { icon: <Award className="w-6 h-6" />, value: 10, label: "Projects built", from: "left" },
+  { icon: <Calendar className="w-6 h-6" />, value: 3, label: "Years coding", from: "bottom" },
+  { icon: <TrendingUp className="w-6 h-6" />, value: 30, label: "Technologies used", from: "right" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -156,7 +157,6 @@ export default function About() {
   const glowYReverse = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    // reducedMotion="user" disables transform animations for people who ask for it
     <MotionConfig reducedMotion="user">
       <section
         ref={sectionRef}
@@ -189,7 +189,6 @@ export default function About() {
               transition={{ duration: 0.8, ease: EASE }}
               className="leading-[0.95] font-black uppercase tracking-tighter text-5xl sm:text-6xl lg:text-7xl"
             >
-              {/* "About" slides in from the left, "Me" from the right */}
               <motion.span
                 className="inline-block text-transparent"
                 style={{ WebkitTextStroke: "1.5px #171717" }}
@@ -198,7 +197,7 @@ export default function About() {
                 About
               </motion.span>{" "}
               <motion.span
-                className="inline-block text-neutral-900"
+                className="inline-block text-[#8023FE]"
                 {...slide("right", 0.1, 0.9)}
               >
                 Me
@@ -211,7 +210,7 @@ export default function About() {
             <Reveal from="top" delay={0.2}>
               <p className="max-w-2xl text-center text-neutral-600 text-sm md:text-base leading-relaxed font-light">
                 I’m Muhammad Shehzore, a Software Developer and Founder of{" "}
-                <span className="text-violet-600 font-medium">The Axora</span>.
+                <span className="text-[#8023FE] font-medium">The Axora</span>.
                 I enjoy turning ideas into useful digital products and building
                 solutions that make everyday business processes simpler and
                 smarter.
@@ -221,23 +220,23 @@ export default function About() {
             <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono text-neutral-500">
               <Reveal from="left" delay={0.35}>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 bg-white">
-                  <GraduationCap className="w-3.5 h-3.5 text-violet-500" />
+                  <GraduationCap className="w-3.5 h-3.5 text-[#8023FE]" />
                   BS Computer Science, CUST · 2023 - 2027
                 </span>
               </Reveal>
 
               <Reveal from="right" delay={0.45}>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 bg-white">
-                  <MapPin className="w-3.5 h-3.5 text-violet-500" />
+                  <MapPin className="w-3.5 h-3.5 text-[#8023FE]" />
                   Islamabad, Pakistan
                 </span>
               </Reveal>
             </div>
           </div>
 
-          {/* ------------------------ Services + photo ------------------------ */}
+          {/* ------------------------ Services + Photo ------------------------ */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 relative">
-            {/* Left column: enters from the left */}
+            {/* Left column */}
             <div className="space-y-12">
               {SERVICES.filter((s) => s.position === "left").map((s, i) => (
                 <ServiceItem
@@ -251,16 +250,179 @@ export default function About() {
               ))}
             </div>
 
-            {/* Center photo: rises from the bottom */}
+            {/* Center photo with hand-drawn purple line art behind it */}
             <div className="flex justify-center items-center order-first md:order-none">
-              <Reveal from="bottom" delay={0.1} className="relative w-full max-w-xs">
-                <motion.div
-                  className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-black/10 bg-gradient-to-b from-violet-50 to-white shadow-[0px_10px_28px_-16px_rgba(124,58,237,0.35)]"
-                  whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.3 },
-                  }}
+              <Reveal
+                from="bottom"
+                delay={0.1}
+                className="relative w-full max-w-xs flex justify-center items-center"
+              >
+                {/* Purple Ambient Glow */}
+                <div className="absolute -inset-6 rounded-full bg-[#8023FE]/20 blur-[60px] pointer-events-none -z-10" />
+
+                {/* Hand-Drawn Purple Line Art Accent */}
+                <svg
+                  viewBox="0 0 300 400"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute -inset-8 w-[115%] h-[115%] -z-10 pointer-events-none"
                 >
+                  <defs>
+                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#A78BFA" />
+                      <stop offset="50%" stopColor="#8023FE" />
+                      <stop offset="100%" stopColor="#6D28D9" />
+                    </linearGradient>
+                    <radialGradient id="dotGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#C4B5FD" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#C4B5FD" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Slow-rotating dashed outer ring for depth */}
+                  <motion.circle
+                    cx="150"
+                    cy="200"
+                    r="175"
+                    stroke="#8023FE"
+                    strokeWidth="1"
+                    strokeDasharray="2 10"
+                    strokeOpacity="0.35"
+                    initial={{ rotate: 0, opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    animate={{ rotate: 360 }}
+                    viewport={VIEWPORT}
+                    transition={{
+                      opacity: { duration: 1, delay: 0.4 },
+                      rotate: { duration: 40, repeat: Infinity, ease: "linear" },
+                    }}
+                    style={{ transformOrigin: "150px 200px" }}
+                  />
+
+                  {/* Second inner dashed ring, counter-rotating */}
+                  <motion.circle
+                    cx="150"
+                    cy="200"
+                    r="150"
+                    stroke="#A78BFA"
+                    strokeWidth="1"
+                    strokeDasharray="1 14"
+                    strokeOpacity="0.3"
+                    initial={{ rotate: 0, opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    animate={{ rotate: -360 }}
+                    viewport={VIEWPORT}
+                    transition={{
+                      opacity: { duration: 1, delay: 0.5 },
+                      rotate: { duration: 55, repeat: Infinity, ease: "linear" },
+                    }}
+                    style={{ transformOrigin: "150px 200px" }}
+                  />
+
+                  {/* Main hand-drawn organic path */}
+                  <motion.path
+                    d="M 40 100 C 10 30, 290 30, 260 150 C 230 270, 10 270, 40 370"
+                    stroke="url(#lineGradient)"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    strokeDasharray="8 6"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    whileInView={{ pathLength: 1, opacity: 0.9 }}
+                    viewport={VIEWPORT}
+                    transition={{ duration: 1.4, delay: 0.2, ease: EASE }}
+                  />
+
+                  {/* Glowing dot that travels along the main path forever */}
+                  <motion.circle
+                    r="5"
+                    fill="url(#dotGlow)"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={VIEWPORT}
+                    transition={{ delay: 1.6, duration: 0.6 }}
+                  >
+                    <animateMotion
+                      dur="6s"
+                      repeatCount="indefinite"
+                      path="M 40 100 C 10 30, 290 30, 260 150 C 230 270, 10 270, 40 370"
+                    />
+                  </motion.circle>
+                  <motion.circle
+                    r="2.5"
+                    fill="#C4B5FD"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={VIEWPORT}
+                    transition={{ delay: 1.6, duration: 0.6 }}
+                  >
+                    <animateMotion
+                      dur="6s"
+                      repeatCount="indefinite"
+                      path="M 40 100 C 10 30, 290 30, 260 150 C 230 270, 10 270, 40 370"
+                    />
+                  </motion.circle>
+
+                  {/* Sparkle Accents */}
+                  {[
+                    { d: "M 15 50 L 30 50 M 22.5 42.5 L 22.5 57.5", delay: 0.7, loopDelay: 0 },
+                    { d: "M 265 340 L 280 340 M 272.5 332.5 L 272.5 347.5", delay: 0.8, loopDelay: 0.6 },
+                    { d: "M 270 70 L 282 70 M 276 64 L 276 76", delay: 0.9, loopDelay: 1.2 },
+                    { d: "M 20 320 L 32 320 M 26 314 L 26 326", delay: 1.0, loopDelay: 1.8 },
+                  ].map((sparkle, i) => (
+                    <motion.path
+                      key={i}
+                      d={sparkle.d}
+                      stroke="#8023FE"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileInView={{
+                        scale: [0, 1.3, 1, 1, 0.7, 1],
+                        opacity: [0, 1, 1, 0.4, 1, 1],
+                      }}
+                      viewport={VIEWPORT}
+                      transition={{
+                        duration: 2.5,
+                        delay: sparkle.delay,
+                        times: [0, 0.2, 0.3, 0.6, 0.8, 1],
+                        repeat: Infinity,
+                        repeatDelay: sparkle.loopDelay,
+                        ease: "easeInOut",
+                      }}
+                      style={{ transformOrigin: "center" }}
+                    />
+                  ))}
+
+                  {/* Small orbiting accent dots */}
+                  {[
+                    { cx: 260, cy: 60, r: 3, delay: 1.2 },
+                    { cx: 30, cy: 200, r: 2.5, delay: 1.4 },
+                    { cx: 250, cy: 330, r: 2, delay: 1.6 },
+                  ].map((dot, i) => (
+                    <motion.circle
+                      key={i}
+                      cx={dot.cx}
+                      cy={dot.cy}
+                      r={dot.r}
+                      fill="#A78BFA"
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: [0.3, 1, 0.3], scale: 1 }}
+                      viewport={VIEWPORT}
+                      transition={{
+                        opacity: {
+                          duration: 2.4,
+                          repeat: Infinity,
+                          delay: dot.delay,
+                          ease: "easeInOut",
+                        },
+                        scale: { duration: 0.5, delay: dot.delay },
+                      }}
+                    />
+                  ))}
+                </svg>
+
+                {/* Clean Photo */}
+                <div className="relative aspect-[3/4] w-full max-w-[280px]">
                   <Image
                     src="/mebg.png"
                     alt="Muhammad Shehzore"
@@ -269,32 +431,11 @@ export default function About() {
                     sizes="(max-width: 768px) 80vw, 320px"
                     className="object-contain object-bottom"
                   />
-
-                  <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 bg-gradient-to-t from-neutral-900/40 to-transparent">
-                    <motion.div {...slide("bottom", 0.7, 0.6)}>
-                      <Link
-                        href="#projects"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-neutral-900 text-sm font-semibold transition-transform hover:scale-105"
-                      >
-                        View Projects
-                        <ArrowUpRight className="w-4 h-4" />
-                      </Link>
-                    </motion.div>
-                  </div>
-                </motion.div>
-
-                {/* Offset outline frame behind the photo, swings into place */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
-                  whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                  viewport={VIEWPORT}
-                  transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
-                  className="absolute inset-0 -m-3 rounded-[1.75rem] border-2 border-violet-300/60 -z-10 pointer-events-none"
-                />
+                </div>
               </Reveal>
             </div>
 
-            {/* Right column: enters from the right */}
+            {/* Right column */}
             <div className="space-y-12">
               {SERVICES.filter((s) => s.position === "right").map((s, i) => (
                 <ServiceItem
@@ -373,11 +514,11 @@ function ServiceItem({
         whileHover={{ y: -4, transition: { duration: 0.2 } }}
       >
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 shrink-0 rounded-2xl bg-violet-50 border border-violet-200 text-violet-600 flex items-center justify-center transition-colors duration-300 group-hover:bg-violet-100">
+          <div className="w-12 h-12 shrink-0 rounded-2xl bg-violet-50 border border-violet-200 text-[#8023FE] flex items-center justify-center transition-colors duration-300 group-hover:bg-violet-100">
             {icon}
           </div>
 
-          <h3 className="text-lg font-bold tracking-tight text-neutral-900 transition-colors duration-300 group-hover:text-violet-600">
+          <h3 className="text-lg font-bold tracking-tight text-neutral-900 transition-colors duration-300 group-hover:text-[#8023FE]">
             {title}
           </h3>
         </div>
@@ -398,12 +539,11 @@ function StatCounter({
   icon,
   value,
   label,
-  suffix,
   from,
   delay,
 }: Stat & { delay: number }) {
   const countRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(countRef, { once: true, amount: 0.5 });
+  const isInView = useInView(countRef, { once: false, amount: 0.5 });
 
   const springValue = useSpring(0, {
     stiffness: 50,
@@ -415,7 +555,11 @@ function StatCounter({
   );
 
   useEffect(() => {
-    if (isInView) springValue.set(value);
+    if (isInView) {
+      springValue.set(value);
+    } else {
+      springValue.set(0);
+    }
   }, [isInView, value, springValue]);
 
   // Dynamic 3D Tilt handlers
@@ -434,8 +578,8 @@ function StatCounter({
     gsap.to(card, {
       rotateX: rotateX,
       rotateY: rotateY,
-      boxShadow: "0px 20px 40px -15px rgba(124, 58, 237, 0.18)",
-      borderColor: "rgba(139, 92, 246, 0.4)",
+      boxShadow: "0px 20px 40px -15px rgba(128, 35, 254, 0.18)",
+      borderColor: "rgba(128, 35, 254, 0.4)",
       duration: 0.25,
       ease: "power2.out",
       transformPerspective: 1000,
@@ -460,22 +604,26 @@ function StatCounter({
         onMouseLeave={handleMouseLeave}
         className="group relative p-6 rounded-3xl bg-white border border-black/8 shadow-sm flex flex-col items-center text-center space-y-4 cursor-pointer [transform-style:preserve-3d] transition-colors duration-300"
       >
-        {/* Floating 3D Icon Badge */}
-        <div className="w-14 h-14 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300 [transform:translateZ(30px)]">
+        <div className="w-14 h-14 rounded-full bg-[#8023FE]/10 border border-[#8023FE]/20 flex items-center justify-center text-[#8023FE] group-hover:bg-[#8023FE] group-hover:text-white transition-all duration-300 [transform:translateZ(30px)]">
           {icon}
         </div>
 
-        {/* Floating 3D Number & Label */}
         <div className="space-y-1 w-full [transform:translateZ(20px)]">
           <div
             ref={countRef}
-            className="text-4xl font-black tracking-tighter text-neutral-900 flex items-center justify-center"
+            className="text-4xl font-black tracking-tighter text-neutral-900 flex items-center justify-center gap-1"
           >
             <motion.span>{displayValue}</motion.span>
-            <span>{suffix}</span>
+            <motion.span
+              animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[#8023FE]"
+            >
+              <Sparkles className="w-5 h-5" />
+            </motion.span>
           </div>
 
-          <p className="text-xs text-neutral-500 font-mono tracking-tight group-hover:text-violet-600 transition-colors">
+          <p className="text-xs text-neutral-500 font-mono tracking-tight group-hover:text-[#8023FE] transition-colors">
             {label}
           </p>
         </div>

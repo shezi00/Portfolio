@@ -2,10 +2,34 @@
 
 import React, { useRef } from "react";
 import { Mail, Phone } from "lucide-react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useParticleCanvas } from "@/app/hooks/useParticleCanvas";
+
+/* -------------------------------------------------------------------------- */
+/*  Directional animation helpers                                             */
+/* -------------------------------------------------------------------------- */
+
+type Direction = "left" | "right" | "top" | "bottom";
+
+const OFFSETS: Record<Direction, { x: number; y: number }> = {
+  left: { x: -90, y: 0 },
+  right: { x: 90, y: 0 },
+  top: { x: 0, y: -70 },
+  bottom: { x: 0, y: 70 },
+};
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const VIEWPORT = { once: false, amount: 0.2 };
+
+const slide = (from: Direction, delay = 0, duration = 0.8) => ({
+  initial: { opacity: 0, ...OFFSETS[from] },
+  whileInView: { opacity: 1, x: 0, y: 0 },
+  viewport: VIEWPORT,
+  transition: { duration, delay, ease: EASE },
+});
 
 // Custom SVG component for LinkedIn
 const LinkedinIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -63,22 +87,6 @@ export default function Contact() {
           ease: "sine.easeInOut",
         });
       }
-
-      // Header entrance animation
-      gsap.fromTo(
-        ".contact-header",
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 80%",
-          },
-        }
-      );
 
       // Staggered cards entrance
       gsap.fromTo(
@@ -157,11 +165,23 @@ export default function Contact() {
       <div className="section-content relative z-10 w-full h-full flex justify-center px-6 md:px-12 py-16">
         <div className="section-inner max-w-5xl w-full flex flex-col items-center justify-center space-y-12 text-center">
           {/* Header */}
-          <div className="contact-header space-y-3">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-neutral-900">
-              Let's <span className="text-violet-600">Connect</span>
+          <div className="contact-header flex flex-col items-center text-center space-y-3">
+            <h2 className="leading-[0.95] font-black uppercase tracking-tighter text-5xl sm:text-6xl lg:text-7xl">
+              <motion.span
+                className="inline-block text-transparent"
+                style={{ WebkitTextStroke: "1.5px #171717" }}
+                {...slide("left", 0.15, 0.9)}
+              >
+                Let's
+              </motion.span>{" "}
+              <motion.span
+                className="inline-block text-[#8023FE]"
+                {...slide("right", 0.15, 0.9)}
+              >
+                Connect
+              </motion.span>
             </h2>
-            <p className="text-neutral-600 text-sm md:text-base font-light max-w-md mx-auto">
+            <p className="text-neutral-600 text-sm md:text-base font-light max-w-md mx-auto pt-2">
               Ready to collaborate on your next project? Feel free to reach out.
             </p>
           </div>

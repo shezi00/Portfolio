@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { MapPin, Mail, Phone, ArrowUpRight, Download } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useParticleCanvas } from "@/app/hooks/useParticleCanvas";
@@ -27,10 +26,16 @@ const GithubIcon = ({ className }: { className?: string }) => (
 );
 
 /* -------------------------------------------------------------------------- */
-/*  Animation variants — each group enters from a different direction         */
+/*  Shared viewport settings — once: false means everything replays          */
+/*  every time it scrolls into view, no refresh needed                       */
 /* -------------------------------------------------------------------------- */
 
-// Top bar: drops down from above
+const VIEWPORT = { once: false, amount: 0.2 };
+
+/* -------------------------------------------------------------------------- */
+/*  Animation variants                                                        */
+/* -------------------------------------------------------------------------- */
+
 const fromTop: Variants = {
   hidden: { opacity: 0, y: -30 },
   visible: {
@@ -47,7 +52,6 @@ const topBarContainer: Variants = {
   },
 };
 
-// Resume button: slides in from the right
 const fromRight: Variants = {
   hidden: { opacity: 0, x: 40 },
   visible: {
@@ -57,7 +61,6 @@ const fromRight: Variants = {
   },
 };
 
-// "Muhammad" outline text: slides in from the left
 const nameFromLeft: Variants = {
   hidden: { opacity: 0, x: -60 },
   visible: {
@@ -67,28 +70,35 @@ const nameFromLeft: Variants = {
   },
 };
 
-// "Shehzore" fill text: slides in from the right
 const nameFromRight: Variants = {
-  hidden: { opacity: 0, x: 60 },
+  hidden: { opacity: 0, x: 60, backgroundPositionX: "100%" },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] },
+    backgroundPositionX: "0%",
+    transition: {
+      opacity: { duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] },
+      x: { duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] },
+      // Fill sweeps in after the slide-in settles
+      backgroundPositionX: {
+        duration: 1.1,
+        delay: 0.9,
+        ease: [0.65, 0, 0.35, 1],
+      },
+    },
   },
 };
 
-// Photo: rises up from below with a scale-in
-const photoFromBottom: Variants = {
-  hidden: { opacity: 0, y: 80, scale: 0.9 },
+const videoFromBottom: Variants = {
+  hidden: { opacity: 0, y: 60, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
-// Role/blurb/CTA block: slides in from the left
 const contentContainer: Variants = {
   hidden: {},
   visible: {
@@ -105,7 +115,6 @@ const contentItem: Variants = {
   },
 };
 
-// Social pills: slides in from the right
 const socialContainer: Variants = {
   hidden: {},
   visible: {
@@ -134,7 +143,7 @@ export default function Hero() {
   // Neural Network Background Particle Canvas
   useParticleCanvas(canvasRef);
 
-  // Self-contained typewriter effect
+  // Typewriter effect
   useEffect(() => {
     const currentFullRole = ROLES[roleIndex];
     const typingSpeed = isDeleting ? 40 : 80;
@@ -161,7 +170,7 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="home"
-      className="portfolio-section section min-h-[calc(100vh-64px)] w-full relative flex flex-col overflow-hidden bg-[#FAFAF8] rounded-2xl border border-black/5"
+      className="portfolio-section section min-h-screen w-full relative flex flex-col overflow-hidden bg-[#FAFAF8] rounded-2xl border border-black/5"
     >
       {/* Particle Canvas Background */}
       <canvas
@@ -172,11 +181,12 @@ export default function Hero() {
       {/* Soft ambient accent */}
       <div className="absolute top-0 right-0 w-[32rem] h-[32rem] rounded-full bg-violet-300/20 blur-[130px] pointer-events-none z-0" />
 
-      {/* Top bar: availability + nav-style contact pills — drops in from the top */}
+      {/* Top bar */}
       <motion.div
-        className="relative z-20 flex flex-wrap items-center justify-between gap-4 px-6 md:px-12 pt-8"
+        className="relative z-20 flex flex-wrap items-center justify-between gap-4 px-6 md:px-12 pt-6"
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={VIEWPORT}
         variants={topBarContainer}
       >
         <motion.div
@@ -237,12 +247,14 @@ export default function Hero() {
         </MotionA>
       </motion.div>
 
-      {/* Center stage: name, photo, and side content all in one relative block */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-6 pb-10">
+      {/* Center stage */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start px-4 pt-2 sm:pt-4 pb-12">
+        {/* Name Title */}
         <h1 className="relative select-none text-center leading-[0.88] font-black uppercase tracking-tighter text-[13vw] sm:text-[10vw] lg:text-[7.5vw]">
           <motion.span
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={VIEWPORT}
             variants={nameFromLeft}
             className="relative z-10 block text-transparent"
             style={{ WebkitTextStroke: "1.5px #171717" }}
@@ -250,66 +262,76 @@ export default function Hero() {
             Muhammad
           </motion.span>
 
-          {/* Hand-drawn accent underline — draws in after the name arrives */}
-          <svg
-            viewBox="0 0 400 30"
-            preserveAspectRatio="none"
-            className="absolute left-1/2 -translate-x-1/2 w-[38%] h-[3vw] max-h-8 -bottom-[3%] z-0 pointer-events-none"
-          >
-            <motion.path
-              d="M6 20 C 80 6, 160 4, 240 10 S 360 22, 394 12"
-              fill="none"
-              stroke="#8b5cf6"
-              strokeWidth="5"
-              strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.6, ease: "easeInOut" }}
-            />
-          </svg>
-
           <motion.span
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={VIEWPORT}
             variants={nameFromRight}
-            className="relative z-10 block text-neutral-900"
+            className="relative z-10 block"
           >
-            Shehzore
+            {/* Wrapper sized by the (untouched) hollow base text below */}
+            <span className="relative inline-block">
+              {/* Base layer: hollow / stroke-only, identical to "Muhammad" — never touched by the fill effect */}
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: "1.5px #171717" }}
+                aria-hidden="true"
+              >
+                Shehzore
+              </span>
+
+              {/* Fill layer: plain (unstroked) text, colored via a gradient clipped to the glyph shapes.
+                  No stroke here, so background-clip:text doesn't distort the letterforms. */}
+              <motion.span
+                className="absolute inset-0 text-transparent"
+                style={{
+                  WebkitTextFillColor: "transparent",
+                  backgroundImage:
+                    "linear-gradient(90deg, #8023FE 50%, transparent 50%)",
+                  backgroundSize: "200% 100%",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                }}
+                initial={{ backgroundPositionX: "100%" }}
+                whileInView={{ backgroundPositionX: "0%" }}
+                viewport={VIEWPORT}
+                transition={{
+                  duration: 1.1,
+                  delay: 0.9,
+                  ease: [0.65, 0, 0.35, 1],
+                }}
+              >
+                Shehzore
+              </motion.span>
+            </span>
           </motion.span>
         </h1>
 
-        {/* Photo overlapping the name, centered — rises up from below */}
+        {/* Video Player pushed down with mt-16 sm:mt-24 to separate from the name */}
         <motion.div
           initial="hidden"
-          animate="visible"
-          variants={photoFromBottom}
-          className="relative z-20 -mt-[26vw] sm:-mt-[19vw] lg:-mt-[13vw] w-[100vw] sm:w-[66vw] lg:w-[42vw] max-w-[680px] aspect-[3/4]"
+          whileInView="visible"
+          viewport={VIEWPORT}
+          variants={videoFromBottom}
+          className="relative z-20 mt-16 sm:mt-24 w-[90vw] sm:w-[65vw] lg:w-[45vw] max-w-[640px] aspect-video"
         >
-          <div className="absolute -inset-8 rounded-full bg-violet-400/25 blur-[70px] pointer-events-none" />
-          <div
-            className="relative w-full h-full"
-            style={{
-              maskImage:
-                "radial-gradient(ellipse 72% 82% at 50% 32%, black 55%, rgba(0,0,0,0.65) 74%, transparent 100%)",
-              WebkitMaskImage:
-                "radial-gradient(ellipse 72% 82% at 50% 32%, black 55%, rgba(0,0,0,0.65) 74%, transparent 100%)",
-            }}
-          >
-            <Image
-              src="/mebg.png"
-              alt="Muhammad Shehzore"
-              fill
-              priority
-              sizes="(max-width: 1024px) 60vw, 320px"
-              className="object-contain object-bottom"
+          <div className="absolute -inset-6 rounded-3xl bg-violet-400/25 blur-[50px] pointer-events-none" />
+          <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden border border-black/10 bg-black shadow-[0px_20px_40px_-15px_rgba(124,58,237,0.35)]">
+            <iframe
+              className="w-full h-full object-cover"
+              src="https://www.youtube.com/embed/8ysbpXPWHss?autoplay=0&rel=0&modestbranding=1"
+              title="Muhammad Shehzore Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
           </div>
         </motion.div>
 
-        {/* Role, blurb, CTAs — slides in from the left, staggered */}
+        {/* Left side content */}
         <motion.div
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={VIEWPORT}
           variants={contentContainer}
           className="relative z-20 mt-8 lg:mt-0 lg:absolute lg:left-4 xl:left-10 lg:top-[62%] lg:-translate-y-1/2 w-full max-w-md lg:max-w-xs text-center lg:text-left space-y-4"
         >
@@ -366,10 +388,11 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Social pills — slides in from the right, staggered */}
+        {/* Right side social pills */}
         <motion.div
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={VIEWPORT}
           variants={socialContainer}
           className="relative z-20 mt-6 lg:mt-0 lg:absolute lg:right-4 xl:right-10 lg:top-[62%] lg:-translate-y-1/2 flex flex-row lg:flex-col gap-3"
         >

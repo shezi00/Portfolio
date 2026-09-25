@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { Mail, Phone, MapPin, ArrowUp, Sparkles } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -33,12 +33,12 @@ export default function Footer() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Ambient pulsing glow effect matching hero/contact sections
+      // Primary ambient pulsing glow
       if (glowRef.current) {
         gsap.to(glowRef.current, {
-          scale: 1.3,
-          opacity: 0.35,
-          duration: 3.5,
+          scale: 1.2,
+          opacity: 0.5,
+          duration: 4,
           repeat: -1,
           yoyo: true,
           ease: "sine.easeInOut",
@@ -83,7 +83,6 @@ export default function Footer() {
     return () => ctx.revert();
   }, []);
 
-  // Smooth scroll function identical to Navbar implementation
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
@@ -102,12 +101,15 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="w-full bg-[#FAFAF8] text-neutral-900 rounded-2xl border border-black/5 relative overflow-hidden my-4"
+      className="w-full bg-gradient-to-b from-[#FAFAF8] via-[#f3eeff]/60 to-[#eaddff]/40 text-neutral-900 rounded-2xl border border-black/5 relative overflow-hidden my-4 shadow-sm"
     >
-      {/* Background Violet Glow Effect */}
+      {/* Top Accent Gradient Border */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#8023FE]/50 to-transparent" />
+
+      {/* Internal Radial Soft Glow */}
       <div
         ref={glowRef}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[28rem] h-28 bg-violet-300/30 blur-[100px] pointer-events-none rounded-full"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[25rem] bg-gradient-to-tr from-[#8023FE]/15 via-violet-300/20 to-transparent blur-[120px] pointer-events-none rounded-full z-0"
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-16 py-12 md:py-16 relative z-10">
@@ -118,12 +120,11 @@ export default function Footer() {
             <a 
               href="#home" 
               onClick={(e) => scrollToSection(e, "#home")} 
-              className="inline-flex items-center gap-2 group"
+              className="inline-block group"
             >
               <span className="text-2xl font-black uppercase tracking-tight text-neutral-900">
-                Muhammad <span className="text-violet-600">Shehzore</span>
+                Muhammad <span className="text-[#8023FE]">Shehzore</span>
               </span>
-             
             </a>
             <p className="text-neutral-600 text-sm leading-relaxed max-w-sm font-light">
               Building modern websites, smart AI solutions, and seamless digital experiences.
@@ -132,7 +133,7 @@ export default function Footer() {
 
           {/* Navigation Links */}
           <div className="footer-col md:col-span-3 space-y-3">
-            <h4 className="text-xs font-mono text-violet-600 uppercase tracking-wider font-semibold">
+            <h4 className="text-xs font-mono text-[#8023FE] uppercase tracking-wider font-semibold">
               Navigation
             </h4>
             <ul className="space-y-2 text-sm text-neutral-700">
@@ -141,7 +142,7 @@ export default function Footer() {
                   <a
                     href={link.href}
                     onClick={(e) => scrollToSection(e, link.href)}
-                    className="hover:text-violet-600 transition-colors inline-block font-medium cursor-pointer"
+                    className="hover:text-[#8023FE] transition-colors inline-block font-medium cursor-pointer"
                   >
                     {link.name}
                   </a>
@@ -152,20 +153,20 @@ export default function Footer() {
 
           {/* Direct Contact Info */}
           <div className="footer-col md:col-span-4 space-y-3">
-            <h4 className="text-xs font-mono text-violet-600 uppercase tracking-wider font-semibold">
+            <h4 className="text-xs font-mono text-[#8023FE] uppercase tracking-wider font-semibold">
               Contact Direct
             </h4>
             <div className="space-y-2.5 text-xs font-mono text-neutral-600">
               <div className="flex items-center gap-2.5 hover:text-neutral-900 transition-colors">
-                <Mail className="w-4 h-4 text-violet-600 shrink-0" />
+                <Mail className="w-4 h-4 text-[#8023FE] shrink-0" />
                 <a href="mailto:shehzore.dev@gmail.com">shehzore.dev@gmail.com</a>
               </div>
               <div className="flex items-center gap-2.5 hover:text-neutral-900 transition-colors">
-                <Phone className="w-4 h-4 text-violet-600 shrink-0" />
+                <Phone className="w-4 h-4 text-[#8023FE] shrink-0" />
                 <a href="tel:+923315378084">+92 331 5378084</a>
               </div>
               <div className="flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 text-violet-600 shrink-0" />
+                <MapPin className="w-4 h-4 text-[#8023FE] shrink-0" />
                 <span>Islamabad, Pakistan</span>
               </div>
             </div>
@@ -183,7 +184,7 @@ export default function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn"
-              className="p-2 rounded-full border border-black/10 bg-white text-neutral-700 hover:text-violet-600 hover:border-violet-400/50 hover:bg-violet-50 transition-colors shadow-sm"
+              className="p-2 rounded-full border border-black/10 bg-white/80 text-neutral-700 hover:text-[#8023FE] hover:border-[#8023FE]/40 transition-colors shadow-sm"
             >
               <LinkedinIcon className="w-4 h-4" />
             </a>
@@ -192,7 +193,7 @@ export default function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub"
-              className="p-2 rounded-full border border-black/10 bg-white text-neutral-700 hover:text-violet-600 hover:border-violet-400/50 hover:bg-violet-50 transition-colors shadow-sm"
+              className="p-2 rounded-full border border-black/10 bg-white/80 text-neutral-700 hover:text-[#8023FE] hover:border-[#8023FE]/40 transition-colors shadow-sm"
             >
               <GithubIcon className="w-4 h-4" />
             </a>
@@ -201,7 +202,7 @@ export default function Footer() {
             <button
               onClick={scrollToTop}
               aria-label="Scroll to top"
-              className="ml-2 p-2.5 rounded-full bg-violet-600/10 border border-violet-500/20 text-violet-600 hover:bg-violet-600 hover:text-white transition-all hover:-translate-y-0.5"
+              className="ml-2 p-2.5 rounded-full bg-[#8023FE] text-white shadow-md shadow-[#8023FE]/20 hover:bg-violet-700 hover:-translate-y-0.5 transition-all"
             >
               <ArrowUp className="w-4 h-4" />
             </button>

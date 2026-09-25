@@ -36,7 +36,7 @@ const OFFSETS: Record<Direction, { x: number; y: number }> = {
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 // Set `once: false` to replay every animation each time you scroll back
-const VIEWPORT = { once: true, amount: 0.2 };
+const VIEWPORT = { once: false, amount: 0.2 };
 
 const slide = (from: Direction, delay = 0, duration = 0.8) => ({
   initial: { opacity: 0, ...OFFSETS[from] },
@@ -83,7 +83,7 @@ const SKILLS: {
 }[] = [
   {
     badgeText: "Web development",
-    badgeColor: "#8B5CF6",
+    badgeColor: "#8023FE",
     title: "Full Stack Website Development",
     description:
       "I build complete websites and web apps, from the backend to a clean and modern interface.",
@@ -177,7 +177,7 @@ export default function Skills() {
         <div className="relative z-10 mx-auto max-w-6xl">
           {/* ------------------------------ Header ------------------------------ */}
           <div className="flex flex-col items-center text-center mb-14">
-            {/* "My" slides in from the left, "Skills" from the right */}
+            {/* "My" slides in from the left, "Services" from the right */}
             <h2 className="leading-[0.95] font-black uppercase tracking-tighter text-5xl sm:text-6xl lg:text-7xl">
               <motion.span
                 className="inline-block text-transparent"
@@ -187,7 +187,7 @@ export default function Skills() {
                 My
               </motion.span>{" "}
               <motion.span
-                className="inline-block text-neutral-900"
+                className="inline-block text-[#8023FE]"
                 {...slide("right", 0.15, 0.9)}
               >
                 Services
@@ -215,7 +215,7 @@ export default function Skills() {
 const GRADIENTS: Record<GradientName, { bg: string; icon: string }> = {
   violet: {
     bg: "bg-gradient-to-br from-violet-100 to-indigo-200/50",
-    icon: "text-violet-600/20",
+    icon: "text-[#8023FE]/20",
   },
   indigo: {
     bg: "bg-gradient-to-br from-indigo-100 to-blue-200/50",
@@ -280,7 +280,7 @@ function GradientCard({
         <div
           className={`relative flex flex-col justify-between h-full min-h-[18rem] w-full overflow-hidden rounded-2xl border border-black/5 p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg ${g.bg}`}
         >
-          {/* Oversized decorative icon: slides up from the bottom corner, then reacts to hover */}
+          {/* Oversized decorative icon */}
           <motion.div
             className="absolute -right-6 -bottom-6 pointer-events-none"
             initial={{ opacity: 0, x: 40, y: 60, rotate: -12 }}
@@ -299,7 +299,7 @@ function GradientCard({
           </motion.div>
 
           <div className="relative z-10 flex flex-col h-full">
-            {/* Badge slides in from the left */}
+            {/* Badge */}
             <motion.div
               className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1 text-sm font-medium text-neutral-700 backdrop-blur-sm w-fit"
               initial={{ opacity: 0, x: -30 }}
@@ -323,7 +323,7 @@ function GradientCard({
               </p>
             </div>
 
-            {/* Link rises from the bottom */}
+            {/* Link */}
             <motion.a
               href={ctaHref}
               className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 w-fit"

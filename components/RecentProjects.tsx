@@ -23,6 +23,29 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Directional animation helpers                                             */
+/* -------------------------------------------------------------------------- */
+
+type Direction = "left" | "right" | "top" | "bottom";
+
+const OFFSETS: Record<Direction, { x: number; y: number }> = {
+  left: { x: -90, y: 0 },
+  right: { x: 90, y: 0 },
+  top: { x: 0, y: -70 },
+  bottom: { x: 0, y: 70 },
+};
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const VIEWPORT = { once: false, amount: 0.2 };
+
+const slide = (from: Direction, delay = 0, duration = 0.8) => ({
+  initial: { opacity: 0, ...OFFSETS[from] },
+  whileInView: { opacity: 1, x: 0, y: 0 },
+  viewport: VIEWPORT,
+  transition: { duration, delay, ease: EASE },
+});
+
 // Helper function to extract Video ID and return a valid Embed URL
 const getEmbedUrl = (url: string) => {
   if (!url) return "";
@@ -196,11 +219,23 @@ export default function RecentProjects() {
 
       <div className="section-content relative z-10 w-full max-w-7xl mx-auto space-y-8 sm:space-y-12">
         {/* Section Header */}
-        <header className="flex flex-col items-center text-center space-y-3">
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-neutral-900">
-            Recent <span className="text-violet-600">Projects</span>
+        <div className="flex flex-col items-center text-center mb-14">
+          <h2 className="leading-[0.95] font-black uppercase tracking-tighter text-5xl sm:text-6xl lg:text-7xl">
+            <motion.span
+              className="inline-block text-transparent"
+              style={{ WebkitTextStroke: "1.5px #171717" }}
+              {...slide("left", 0.15, 0.9)}
+            >
+              Recent
+            </motion.span>{" "}
+            <motion.span
+              className="inline-block text-[#8023FE]"
+              {...slide("right", 0.15, 0.9)}
+            >
+              Projects
+            </motion.span>
           </h2>
-        </header>
+        </div>
 
         {/* Stacking Cards Container */}
         <StackingCards
